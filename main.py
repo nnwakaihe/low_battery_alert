@@ -60,3 +60,4 @@ try:
         check_battery_and_notify()
 except KeyboardInterrupt:
     print("Exiting...")
+
