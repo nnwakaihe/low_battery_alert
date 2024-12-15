@@ -38,11 +38,13 @@ def main():
         while True:
             """Check the battery level and notify if it is at 15% and not charging."""
             battery = sensors_battery()
-            print(f"Battery percentage: {battery.percent}%")
-
+            # print(f"Battery percentage: {battery.percent}%")
+            print(f"Battery percentage: {10}%")
             # if battery.percent <= 15 and not battery.power_plugged:
             if 10 < 15 and first_alert:
+                print('battery is low af')
                 first_alert = False
+
                 # Construct low battery Popup Window
                 root = Tk()
                 root.title("Battery Alert")
@@ -54,8 +56,25 @@ def main():
 
                 # Play the low battery audio once
                 # threading.Thread(target=play_audio, args=(low_battery_audio,), daemon=True).start()
-
+                def check_charging_status():
+                    """Check if the battery starts charging, and close the window."""
+                    new_battery = sensors_battery()
+                    fake_battery = False
+                    # if new_battery.power_plugged:  # If the battery is now charging
+                    if fake_battery:  # If the battery is now charging
+                        print('now charging, closing window')
+                        close_window()
+                        winsound.PlaySound(charging_audio, winsound.SND_FILENAME | winsound.SND_ASYNC)
+                    else:
+                        root.after(20000, check_charging_status)  # Re-check after 2 seconds
+                check_charging_status()  # Start checking charging status
                 root.mainloop() #initialize window
+
+            elif battery.power_plugged and root:
+                print('the window should already be closed since were charging, but just in case CLOSE')
+                close_window()  # Ensure the window is closed if charging
+                first_alert = True
+
             time.sleep(30)
 
     except KeyboardInterrupt:
