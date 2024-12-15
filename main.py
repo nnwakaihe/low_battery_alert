@@ -6,6 +6,9 @@ from tkinter import Tk, Label, Button
 from psutil import sensors_battery
 import time
 
+###Working loops
+#Unplug, Plug, Unplug
+#Plug, Unplug, Plug
 
 def validating_audio():
     # Creating and validating audio file paths
