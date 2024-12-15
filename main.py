@@ -22,7 +22,6 @@ def validating_audio():
             exit()
     return low_battery_audio, charging_audio
 
-
 def close_window(root):
     """Stop audio and close the pop-up window."""
     winsound.PlaySound(None, winsound.SND_PURGE)  # Stop the current audio
@@ -56,17 +55,14 @@ notify_w_loop = [True]
 def main():
     low_battery_audio, charging_audio = validating_audio()
 
-    first_alert = [True]
     # Periodically check the battery level
     try:
         while True:
             """Check the battery level and notify if it is at 15% and not charging."""
             battery = sensors_battery()
-            # print(f"Battery percentage: {battery.percent}%")
-            print(f"Top of while loop. Battery percentage: {10}%")
+            print(f"Battery percentage: {battery.percent}%")
             global notify_w_loop
-            # elif battery.percent <= 15 and not battery.power_plugged:
-            if 10 < 15 and notify_w_loop[0] and not battery.power_plugged:
+            if battery.percent <= 15 and notify_w_loop[0] and not battery.power_plugged:
                 print('defining popup window attributes')
                 first_alert = False
 
@@ -77,15 +73,13 @@ def main():
                 root.attributes('-topmost', True)
                 Label(root, text="Battery is at 15%! Please plug in your charger.", wraplength=250,
                       font=("Arial", 12)).pack(pady=20)
-                # Button(root, text="OK", command=close_window(root), font=("Arial", 10)).pack(pady=10)
                 Button(root, text="OK", command=lambda: manual_close(root), font=("Arial", 10)).pack(pady=10)
 
                 # Play the low battery audio once
-                if not battery.power_plugged:
-                    print('playing dying audio')
-                    audio_playing[0] = True
-                    threading.Thread(target=play_audio, args=(low_battery_audio,), daemon=True).start()
-                    print('displaying popup')
+                print('playing dying audio')
+                audio_playing[0] = True
+                threading.Thread(target=play_audio, args=(low_battery_audio,), daemon=True).start()
+                print('displaying popup')
                 def check_charging_status():
                     """Check if the battery starts charging, and close the window."""
                     print('checking charge status')
