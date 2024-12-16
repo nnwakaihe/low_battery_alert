@@ -6,10 +6,6 @@ from tkinter import Tk, Label, Button
 from psutil import sensors_battery
 import time
 
-###Working loops
-#Unplug, Plug, Unplug
-#Plug, Unplug, Plug
-
 def validating_audio():
     # Creating and validating audio file paths
     print('set audio file paths')
@@ -115,3 +111,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    # pyinstaller --name Low_Battery_Notification --onefile --noconsole --add-data "Low_Battery_Audio.wav;." --add-data "Charging_Audio.wav;." main.py
