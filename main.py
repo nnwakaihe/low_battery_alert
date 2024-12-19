@@ -61,14 +61,14 @@ def main():
             battery = sensors_battery()
             print(f"Battery percentage: {battery.percent}%")
             # If the battery is low, and the battery isn't plugged in, and the popup wasn't closed manually
-            if battery.percent <= 50 and not battery.power_plugged and not closed_manually[0]:
+            if (battery.percent <= 50 or battery.percent <= 15) and not battery.power_plugged and not closed_manually[0]:
                 # Construct low battery Popup Window
                 print('defining popup window attributes')
                 root = Tk()
                 root.title("Battery Alert")
                 root.geometry("300x150")
                 root.attributes('-topmost', True)
-                Label(root, text="Battery is at 15%! Please plug in your charger.", wraplength=250,
+                Label(root, text="Battery is Low! Please plug in your charger.", wraplength=250,
                       font=("Arial", 12)).pack(pady=20)
                 Button(root, text="OK", command=lambda: manual_close(root), font=("Arial", 10)).pack(pady=10)
 
