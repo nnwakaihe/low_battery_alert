@@ -6,17 +6,11 @@ from tkinter import Tk, Label, Button
 from psutil import sensors_battery
 import time
 
-def validating_audio():
-    # Creating and validating audio file paths
-    print('set audio file paths')
-    low_battery_audio = os.path.join(os.path.dirname(__file__), "Low_Battery_Audio.wav")
-    charging_audio = os.path.join(os.path.dirname(__file__), "Charging_Audio.wav")
-    # Check if the audio files exist
-    for audio_file in [low_battery_audio, charging_audio]:
-        if not os.path.exists(audio_file):
-            ctypes.windll.user32.MessageBoxW(0, f"Audio file not found: {audio_file}", "Error", 0x10)
-            exit()
-    return low_battery_audio, charging_audio
+# "Global" variables, will use these for controlling things as we loop in and out of if statements
+audio_playing = [False]
+window_open = [False]
+closed_manually = [False]
+
 
 def close_window(root):
     """Stop audio and close the pop-up window."""
@@ -30,11 +24,12 @@ def close_window(root):
         except Exception as e:
                 print(f"Error closing window: {e}")
 
+
 def manual_close(root):
     close_window(root)
-    global notify_w_loop
-    notify_w_loop = [False]
-    print('popup closed manually \n')
+    closed_manually[0] = True
+    print('popup closed manually')
+
 
 def play_audio(file):
     """Play the audio file once."""
@@ -43,10 +38,18 @@ def play_audio(file):
         winsound.PlaySound(file, winsound.SND_FILENAME | winsound.SND_ASYNC)
 
 
-# "Global" variables, will use these for controlling things as we loop in and out of if statements
-audio_playing = [False]  # Global flag to control audio playback
-window_open = [False]
-notify_w_loop = [True]
+def validating_audio():
+    # Creating and validating audio file paths
+    print('set audio file paths')
+    low_battery_audio = os.path.join(os.path.dirname(__file__), "Low_Battery_Audio.wav")
+    charging_audio = os.path.join(os.path.dirname(__file__), "Charging_Audio.wav")
+    # Check if the audio files exist
+    for audio_file in [low_battery_audio, charging_audio]:
+        if not os.path.exists(audio_file):
+            ctypes.windll.user32.MessageBoxW(0, f"Audio file not found: {audio_file}", "Error", 0x10)
+            exit()
+    return low_battery_audio, charging_audio
+
 
 def main():
     low_battery_audio, charging_audio = validating_audio()
@@ -57,17 +60,15 @@ def main():
             """Check the battery level and notify if it is at 15% and not charging."""
             battery = sensors_battery()
             print(f"Battery percentage: {battery.percent}%")
-            global notify_w_loop
-            if battery.percent <= 15 and notify_w_loop[0] and not battery.power_plugged:
-                print('defining popup window attributes')
-                first_alert = False
-
+            # If the battery is low, and the battery isn't plugged in, and the popup wasn't closed manually
+            if (battery.percent <= 50 or battery.percent <= 15) and not battery.power_plugged and not closed_manually[0]:
                 # Construct low battery Popup Window
+                print('defining popup window attributes')
                 root = Tk()
                 root.title("Battery Alert")
                 root.geometry("300x150")
                 root.attributes('-topmost', True)
-                Label(root, text="Battery is at 15%! Please plug in your charger.", wraplength=250,
+                Label(root, text="Battery is Low! Please plug in your charger.", wraplength=250,
                       font=("Arial", 12)).pack(pady=20)
                 Button(root, text="OK", command=lambda: manual_close(root), font=("Arial", 10)).pack(pady=10)
 
@@ -75,14 +76,13 @@ def main():
                 print('playing dying audio')
                 audio_playing[0] = True
                 threading.Thread(target=play_audio, args=(low_battery_audio,), daemon=True).start()
-                print('displaying popup')
+
                 def check_charging_status():
                     """Check if the battery starts charging, and close the window."""
                     print('checking charge status')
                     new_battery = sensors_battery()
                     fake_battery = False
                     if new_battery.power_plugged:  # If the battery is now charging
-                    # if fake_battery:  # If the battery is now charging
                         print('now charging, closing window if open')
                         close_window(root)
                         play_audio(charging_audio)
@@ -91,8 +91,8 @@ def main():
                         print('still not charging, will check again later')
                         root.after(2000, check_charging_status)  # Re-check after 2 seconds
                 check_charging_status()  # Start checking charging status
-                print('\n')
                 window_open[0] = True
+                print('displaying popup')
                 root.mainloop() #initialize window
 
             elif battery.power_plugged:
@@ -100,10 +100,10 @@ def main():
                 if window_open[0]:
                     print('just started charing, closing popup')
                     close_window(root)  # Ensure the window is closed if charging
-                notify_w_loop = [True]
-                print('\n')
+                closed_manually[0] = False
 
             time.sleep(5)
+            print('\n')
 
     except KeyboardInterrupt:
         print("Exiting...")
