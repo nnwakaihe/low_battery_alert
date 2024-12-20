@@ -41,7 +41,6 @@ This guide provides instructions to:
 ---
 
 ## **Notes**
-- Ensure the `.exe` file and audio files are in the same directory when testing and running the task.
 - Use the **History** tab in Task Scheduler to debug issues with the scheduled task.
 - Modify the script or Task Scheduler settings as necessary for your specific use case.
 
