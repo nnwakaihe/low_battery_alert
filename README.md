@@ -3,44 +3,11 @@
 This repository contains a Python script designed to alert users when their laptop's battery reaches a critical low level. Frustrated with my laptop's battery dying without warning, I created this script to solve the problem. When the battery drops to 25% or 15%, a pop-up window appears, and a snippet from the show *Futurama* plays, where a robot freaks out due to a low power supply. When the laptop is plugged in to charge, the robot's voice calms down, providing a fun and effective way to monitor battery levels.
 
 This guide provides instructions to:
-1. Convert your Python script into an executable file (`.exe`).
-2. Schedule the `.exe` file to run automatically using Task Scheduler.
+- Schedule the `.exe` file to run automatically using Task Scheduler.
 
 ---
 
-## **Step 1: Converting the Python Script into an Executable File**
-
-### **Requirements**
-- Install Python and ensure it is added to your system PATH.
-- Install `pyinstaller` to convert the Python script into an executable.
-  ```bash
-  pip install pyinstaller
-  ```
-
-### **Steps**
-1. Open a command prompt and navigate to the directory containing your Python script (`main.py`).
-   ```bash
-   cd path\to\your\script
-   ```
-
-2. Run the `pyinstaller` command to create the executable, including the necessary audio files:
-   ```bash
-   pyinstaller --name Low_Battery_Notification --onefile --noconsole --add-data "Low_Battery_Audio.wav;." --add-data "Charging_Audio.wav;." main.py
-   ```
-   - `--onefile`: Packages the script into a single `.exe` file.
-   - `--add-data`: Ensures the required audio files are bundled with the `.exe`.
-     - For Windows, separate paths and destinations with a semicolon (`;`).
-
-3. After the command completes, the `.exe` file will be located in the `dist` directory:
-   ```
-   dist\Low_Battery_Notification.exe
-   ```
-
-4. Test the `.exe` by running it directly to ensure the script behaves as expected.
-
----
-
-## **Step 2: Scheduling the Executable with Task Scheduler**
+## **Scheduling the Executable with Task Scheduler**
 
 ### **Steps**
 1. Open **Task Scheduler** (search for it in the Start menu).
