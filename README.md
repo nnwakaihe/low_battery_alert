@@ -1,4 +1,6 @@
-# README: Creating and Scheduling Battery Alert Application
+# Battery Alert
+
+This repository contains a Python script designed to alert users when their laptop's battery reaches a critical low level. Frustrated with my laptop's battery dying without warning, I created this script to solve the problem. When the battery drops to 15%, a pop-up window appears, and a snippet from the show *Futurama* plays, where a robot freaks out due to a low power supply. When the laptop is plugged in to charge, the robot's voice calms down, providing a fun and effective way to monitor battery levels.
 
 This guide provides instructions to:
 1. Convert your Python script into an executable file (`.exe`).
