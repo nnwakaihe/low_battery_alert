@@ -61,7 +61,7 @@ def main():
             battery = sensors_battery()
             print(f"Battery percentage: {battery.percent}%")
             # If the battery is low, and the battery isn't plugged in, and the popup wasn't closed manually
-            if (battery.percent <= 50 or battery.percent <= 15) and not battery.power_plugged and not closed_manually[0]:
+            if battery.percent <= 25 and not battery.power_plugged and not closed_manually[0]:
                 # Construct low battery Popup Window
                 print('defining popup window attributes')
                 root = Tk()
@@ -94,6 +94,10 @@ def main():
                 window_open[0] = True
                 print('displaying popup')
                 root.mainloop() #initialize window
+
+            elif battery.percent <= 15 and not battery.power_plugged:
+                #Reset global variables so the alert turns back on
+                closed_manually[0] = False
 
             elif battery.power_plugged:
                 print('charging RN')
